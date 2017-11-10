@@ -6,6 +6,7 @@ import unittest
 
 class RmTestCase(unittest.TestCase):
     tmpfilepath = os.path.join(tempfile.gettempdir(), "tmp-testfile")
+    print(tmpfilepath)
 
     def setUp(self):
         with open(self.tmpfilepath, "wb") as f:
