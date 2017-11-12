@@ -1,11 +1,11 @@
 from simple_delete import rm
 
-from unittest.mock import MagicMock as mock
+from unittest import mock
 import unittest
 
 class RmTestCase(unittest.TestCase):
 
-    @mock.patch('mymodule.os')
+    @mock.patch('simple_delete.os')
     def test_rm(self, mock_os):
         rm("any path")
         mock_os.remove.assert_called_with("any path")
