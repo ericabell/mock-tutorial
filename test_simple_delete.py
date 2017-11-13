@@ -21,10 +21,19 @@ class RmTestCase(unittest.TestCase):
         with open(self.tmpfilepath, "w") as f:
             f.write("Delete me!")
 
+    @mock.patch('simple_delete.os.path') # we also want to mock out the call to isfile, which is in os.path
     @mock.patch('simple_delete.os') # because rm gets called *in* simple_delete.os
                                     # 'simple_delete.rm' is NOT what we want to do
-    def test_rm(self, mock_os): # mock_os is now our ENTIRE replaced mock'ed version
-                                # of the os module that is imported in simple_delete
+    def test_rm(self, mock_os, mock_path): # mock_os is now our ENTIRE replaced mock'ed version
+                                           # of the os module that is imported in simple_delete
+        mock_path.isfile.return_value = False
+
+        rm("any path")
+
+        self.assertFalse(mock_os.remove.called, "Failed to not remove the file if not present")
+
+        mock_path.isfile.return_value = True # this will make the file *exist* for us
+
         rm("any path")
         # now we run the check to see that rm was called correctly
         # note: we don't actually have to do this, since mocking out simple_delete.os
