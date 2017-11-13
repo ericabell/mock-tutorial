@@ -1,4 +1,9 @@
 from simple_delete import rm
+# our goal will be to mock the rm call to os.remove so that we don't actually
+# touch the filesystem in calling rm.
+# In our test, we mock 'simple_delete.os' because the thing that touches the filesystem
+# is the call to os.remove() which is located *inside* our rm function.
+# What we don't want to do is mock 'simple_delete.rm'
 
 import os.path
 import tempfile
@@ -18,7 +23,8 @@ class RmTestCase(unittest.TestCase):
 
     @mock.patch('simple_delete.os') # because rm gets called *in* simple_delete.os
                                     # 'simple_delete.rm' is NOT what we want to do
-    def test_rm(self, mock_os):
+    def test_rm(self, mock_os): # mock_os is now our ENTIRE replaced mock'ed version
+                                # of the os module that is imported in simple_delete
         rm("any path")
         # now we run the check to see that rm was called correctly
         # note: we don't actually have to do this, since mocking out simple_delete.os
